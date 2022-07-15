@@ -15,17 +15,19 @@ export default function NestedCheckbox({data, api}) {
                 allGenerationsData.push(element);
             }else{
                 element.isBranch = (data.find(child=>child.parentId===element.name)!==undefined)
-                childrenData.push(element);
+                childrenData.push({isBranch:element.isBranch, label:element.label,name:element.name, parentId:element.parentId, data:element.data, api:{}});
             }
         });
+
+        
 
         setAllGenerations(allGenerationsData);
         setChildren(childrenData);
     },[data]);
 
     useEffect(()=>{
-        if(typeof api === 'undefined'){
-            api({})
+        if(typeof api === 'function'){
+            api({getSelectedChildren})
         }
     },[api]);
 
@@ -39,12 +41,21 @@ export default function NestedCheckbox({data, api}) {
         return "node-leaf"
     };
 
+    const getSelectedChildren = ()=>{
+        console.log(children);
+        let returnArray = [];
+        children.forEach((child)=>{
+            returnArray = [...returnArray, ...child.api.getSelectedChildren()]
+        })
+        return returnArray;
+    };
+
     return (
         <div className="nested-checkbox-container">
             <ul >
             {
                 children.map((child,index) =>{
-                    return (<li className={`${getClassNames(index)}`} key={child.name}><Node index={index} data={child} childrenData={allGenerations} onChange={()=>{}} onUpdate={()=>{}} /> </li>)
+                    return (<li className={`${getClassNames(index)}`} key={child.name}><Node index={index} api={(api)=>{child.api = api}} data={child} childrenData={allGenerations} onChange={()=>{}} onUpdate={()=>{}} /> </li>)
                 })
             }
                 

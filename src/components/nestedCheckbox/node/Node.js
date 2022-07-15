@@ -10,7 +10,7 @@ export default function Node({index, data, childrenData, onChange, onUpdate, api
     const [children, setChildren] = useState([]);
     const [isBranch, setIsBranch] = useState(false);
     const [allGenerations, setAllGenerations] = useState([]);
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
 
     useEffect(()=>{
         let myChildrenData = [];
@@ -18,7 +18,7 @@ export default function Node({index, data, childrenData, onChange, onUpdate, api
         childrenData.forEach(element => {
             if(element.parentId === data.name){
                 element.isBranch = (childrenData.find(child=>child.parentId===element.name)!==undefined)
-                myChildrenData.push(element);
+                myChildrenData.push({isBranch:element.isBranch, label:element.label,name:element.name, parentId:element.parentId, data:element.data, api:{}});
             }else{
                 allGenerationsData.push(element);
             }
@@ -31,7 +31,7 @@ export default function Node({index, data, childrenData, onChange, onUpdate, api
 
     useEffect(()=>{
         if(typeof api === 'function'){
-            api({setChildrenSelection,checkBox}, index);
+            api({setChildrenSelection,checkBox,getSelectedChildren}, index);
         }
     },[api]);
 
@@ -53,6 +53,8 @@ export default function Node({index, data, childrenData, onChange, onUpdate, api
     }
 
     const setChildrenSelection = (isSelected) => {
+        console.log(data.name);
+        console.log(children);
         if(isBranch){
             children.forEach(child=>{
                 child.api.setChildrenSelection(isSelected)
@@ -100,6 +102,23 @@ export default function Node({index, data, childrenData, onChange, onUpdate, api
         }
         return <></>
     }
+
+    const getSelectedChildren = ()=>{
+        let returnArray = [];
+        if(isBranch){
+            children.forEach((child)=>{
+                returnArray = [...returnArray, ...child.api.getSelectedChildren()]
+            })
+            if(checkBox.current.getIntermediateState() || checkBox.current.getCheckedState()){
+                returnArray = [...returnArray, {name:data.name, data:data.data}]
+            }
+        }else{
+            if(checkBox.current.getCheckedState()){
+                returnArray = [{name:data.name, data:data.data}];
+            }
+        }        
+        return returnArray;
+    };
   return (
     <div>
         <div className="node-checkbox-container">
