@@ -1,0 +1,27 @@
+.node-checkbox-container{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 20px;
+    font-weight: lighter;
+    padding: 10px 0;
+}
+
+.node-leaf{
+    list-style: none;
+    font-weight: lighter;
+    padding-left: 28px;
+}
+
+.node-branch{
+    list-style: none;
+    font-weight: bolder;
+}
+
+.node-closed{
+    
+}
+
+.node-opened{
+    
+}

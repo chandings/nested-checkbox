@@ -1,0 +1,7 @@
+.tree-container{
+    border: 1px solid #aaa;
+    padding: 10px;
+    margin:10px;
+    height: fit-content;
+    width: 33vw;    
+}
