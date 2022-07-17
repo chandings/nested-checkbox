@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/nested-checkbox/static/css/main.e306583d.css",
+    "main.js": "/nested-checkbox/static/js/main.85991450.js",
+    "static/js/787.cd65be6b.chunk.js": "/nested-checkbox/static/js/787.cd65be6b.chunk.js",
+    "static/media/closed.PNG": "/nested-checkbox/static/media/closed.ccad6f64eeef5c99db07.PNG",
+    "static/media/open.PNG": "/nested-checkbox/static/media/open.e1ad32b8ecf8fda48dbe.PNG",
+    "index.html": "/nested-checkbox/index.html",
+    "main.e306583d.css.map": "/nested-checkbox/static/css/main.e306583d.css.map",
+    "main.85991450.js.map": "/nested-checkbox/static/js/main.85991450.js.map",
+    "787.cd65be6b.chunk.js.map": "/nested-checkbox/static/js/787.cd65be6b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e306583d.css",
+    "static/js/main.85991450.js"
+  ]
+}
