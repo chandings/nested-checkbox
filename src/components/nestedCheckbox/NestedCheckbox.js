@@ -28,7 +28,7 @@ export default function NestedCheckbox({data, api}) {
 
     useEffect(()=>{
         if(typeof api === 'function'){
-            api({getSelectedChildren, setAllChildrenOpenState, setAllChildrenSelectionState, expandChild, colapseChild})
+            api({getSelectedChildren, setAllChildrenOpenState, setAllChildrenSelectionState, expandChild, colapseChild, setChildSelectionState})
         }
     },[api]);
 
@@ -76,9 +76,18 @@ export default function NestedCheckbox({data, api}) {
         });
     };
 
+    const setChildSelectionState = (selectionState, name)=>{
+        if(!checkIfChildExists(name)){
+            throwNameNotFoundError(name);
+            return;
+        }
+        apis.current.forEach(api=>{
+            api.current.setChildSelectionState(selectionState, name);
+        });
+    };
+
     const setAllChildrenSelectionState = (selectionState)=>{
         apis.current.forEach(api=>{
-            console.log(api.current);
             api.current.checkBox.current.setIntermediateState(false);
             api.current.checkBox.current.changeCheckedState(selectionState);
         });

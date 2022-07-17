@@ -143,6 +143,18 @@ export default class Node extends Component {
         }
     }
 
+    setChildSelectionState = (selectionState, name)=>{
+        if(this.props.data.name === name)
+        {
+            this.checkBox.current.setIntermediateState(false);
+            this.checkBox.current.changeCheckedState(selectionState);
+        }else if(this.state.isBranch){
+            this.apis.forEach(api=>{
+                api.current.setChildSelectionState(selectionState, name);
+            });
+        }
+    };
+
     setAllChildrenOpenState = (openState)=>{
         if(this.state.isBranch){
             this.setOpenState(openState);

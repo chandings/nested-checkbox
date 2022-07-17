@@ -35,6 +35,16 @@ export default function TreeContainer({dataArray, title}) {
         }
     };
 
+    const handleChildSelection = (selectionState)=>{
+        //api.current.setChildSelectionState(selectionState, nodeName);
+        setErrorMessage("")
+        try{
+            api.current.setChildSelectionState(selectionState,nodeName);
+        }catch(error){
+            setErrorMessage("Error: " + error.message)
+        }
+    };
+
 
   
     return (
@@ -51,8 +61,8 @@ export default function TreeContainer({dataArray, title}) {
         <br/>
         <input className='text' type="text" onChange={(event)=>{setNodeName(event.target.value);}} placeholder='Label of the node'></input>
         <br/>
-        <button onClick={()=>{api.current.setAllChildrenOpenState(true)}}>Select Node</button>
-        <button onClick={()=>{api.current.setAllChildrenOpenState(false)}}>Unselect Node</button>
+        <button onClick={()=>{handleChildSelection(true)}}>Select Node</button>
+        <button onClick={()=>{handleChildSelection(false)}}>Unselect Node</button>
         <br/>
         <button onClick={handleExpandNode}>Expand Node</button>
         <button onClick={handleColapseNode}>Colapse Node</button>
