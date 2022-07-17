@@ -5,7 +5,95 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.hidden{
-  visibility: hidden;
-  height: 0;
+
+
+/*checkbox Custom Styles*/
+.unselectedOuter{
+  display: inline-block;
+  width:20px;
+  height:20px;
+  border:2px solid #fff;
+  border-radius: 12px;
+  cursor: pointer;
 }
+
+.unselectedInner{
+  width:20px;
+  height:20px;
+  border-radius: 12px;
+  background-color: rgb(255, 255, 255);
+}
+
+.selectedOuter{
+  display: inline-block;
+  width:20px;
+  height:20px;
+  border:2px solid rgb(80, 247, 94);;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.selectedInner{
+  width:14px;
+  height:14px;
+  margin:3px;
+  border-radius: 10px;
+  background-color: rgb(80, 247, 94);
+
+}
+
+.intermediateOuter{
+  display: inline-block;
+  width:20px;
+  height:20px;
+  border:2px solid #fff;;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.intermediateInner{
+  width:14px;
+  height:14px;
+  margin:3px;
+  border-radius: 10px;
+  background-color: rgb(80, 247, 94);
+
+}
+
+/*checkbox Custom Styles end*/
+
+/* nested checkbox custom styles*/
+.ncb-background{
+  background: #4caf50;
+  padding: 10px;
+  border-radius: 10px;
+  min-height: 200px;
+}
+
+.ncb-node-opened{
+color:red;
+}
+.ncb-node-opened>div>label{
+  font-weight: 100!important;
+}
+.ncb-node-closed{
+color:blue;
+}
+
+.ncb-node-closed>div>label{
+  font-weight: 100!important;
+}
+
+.ncb-leaf{
+color:black;
+}
+
+.folder{
+  color:rgb(226, 198, 35)
+}
+
+.folder-open{
+  color:rgb(226, 198, 35)
+}
+
+/* nested checkbox custom styles end*/

@@ -2,7 +2,7 @@ import {useState, useEffect, useRef} from 'react';
 import NestedCheckbox from '../nestedCheckbox/NestedCheckbox';
 import "./TreeContainer.css"
 
-export default function TreeContainer({dataArray, title}) {
+export default function TreeContainer({dataArray, customStyles, title}) {
     const [data, setData] = useState([]);
     const [processedData, setProcessedData] = useState([]);
     const [errorMessage, setErrorMessage] = useState("");
@@ -50,7 +50,7 @@ export default function TreeContainer({dataArray, title}) {
     return (
     <div className='tree-container'>
     <h3>{title}</h3>
-        <NestedCheckbox  data = {[...data]} api={(checkboxAPI)=>{api.current=checkboxAPI}}/>
+        <NestedCheckbox classNames={customStyles} data = {[...data]} api={(checkboxAPI)=>{api.current=checkboxAPI}}/>
         <button onClick={()=>{setProcessedData(api.current.getSelectedChildren())}}>Get Selected Labels</button>
         <br/>
         <button onClick={()=>{api.current.setAllChildrenSelectionState(true)}}>Select All</button>

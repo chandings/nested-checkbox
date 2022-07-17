@@ -5,19 +5,37 @@ export default class TriStateCheckbox extends Component {
 
     constructor(props){
         super(props);
+        let customClass = {
+            unselectedOuter:"",
+            unselectedInner:"",
+            selectedOuter:"",
+            selectedInner:"",
+            intermediateOuter:"",
+            intermediateInner:""
+                        }
         this.state = {
             intermediate: false,
-            checked: false
+            checked: false,
+            customClass:{...customClass, ...props.classNames}
         }
     }
 
-    getCurrentClassName = ()=>{
+    getOuterClassNames = ()=>{
         if(this.state.intermediate)
-            return 'tsc-inner-box-intermediate';
+            return (this.state.customClass.intermediateOuter && this.state.customClass.intermediateOuter!== "")?this.state.customClass.intermediateOuter:'tsc-outer-box';
         if(this.state.checked)
-            return 'tsc-inner-box-checked';
+            return (this.state.customClass.intermediateOuter && this.state.customClass.selectedOuter!== "")?this.state.customClass.selectedOuter:'tsc-outer-box';
         else
-            return 'tsc-inner-box-unchecked';
+            return (this.state.customClass.unselectedOuter && this.state.customClass.unselectedOuter!== "")?this.state.customClass.unselectedOuter:'tsc-outer-box';
+    }
+
+    getInnerClassNames = ()=>{
+        if(this.state.intermediate)
+            return (this.state.customClass.intermediateInner && this.state.customClass.intermediateInner!== "")?this.state.customClass.intermediateInner:'tsc-inner-box-intermediate';
+        if(this.state.checked)
+        return (this.state.customClass.selectedInner && this.state.customClass.selectedInner!== "")?this.state.customClass.selectedInner:'tsc-inner-box-checked';
+        else
+            return (this.state.customClass.unselectedInner && this.state.customClass.unselectedInner!== "")?this.state.customClass.unselectedInner:'tsc-inner-box-unchecked';
     }
     handleCick = ()=>{
         if(this.state.intermediate){
@@ -77,8 +95,8 @@ export default class TriStateCheckbox extends Component {
         return this.state.checked;
     };
     render() {
-       return <div onClick={this.handleCick} className="tsc-outer-box">
-            <div className={`${this.getCurrentClassName()}`}></div>
+       return <div onClick={this.handleCick} className={`${this.getOuterClassNames()}`}>
+            <div className={`${this.getInnerClassNames()}`}></div>
        </div>
 
     }

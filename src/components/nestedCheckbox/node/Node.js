@@ -167,9 +167,9 @@ export default class Node extends Component {
     getImage = ()=>{
         if(this.state.isBranch){
             if(this.state.isOpen){
-                return <img src={OpenedIcon} onClick={this.toggleOpen} alt="(-)"/>
+                return this.props.classNames.openIcon//<img src={OpenedIcon} onClick={this.toggleOpen} alt="(-)"/>
             }
-            return <img src={ClosedIcon} onClick={this.toggleOpen} alt="(+)"/>
+            return this.props.classNames.closeIcon//<img src={ClosedIcon} onClick={this.toggleOpen} alt="(+)"/>
         }
         return <></>
     };
@@ -184,21 +184,33 @@ export default class Node extends Component {
         return "node-leaf"
     }
 
+    getTopLevelClassNames = () =>{
+        if(this.state.isBranch){
+            if(this.state.isOpen){
+                return this.props.classNames.nodeOpened;
+            }else{
+                return this.props.classNames.nodeClosed;
+            }
+        }
+        return this.props.classNames.leaf;
+    };
+
     render() {
         return (
-            <div>
+            <div className={`${this.getTopLevelClassNames()}`}>
                 <div className="node-checkbox-container">
-                    {this.getImage()}
-                    <TriStateCheckbox onChange={this.handleCheckboxChange} onUpdate={()=>{this.props.onUpdate();}} ref={this.checkBox}/>
+                    <span onClick={this.toggleOpen}>{this.getImage()}</span>
+                    <TriStateCheckbox classNames={this.props.classNames.checkboxClassNames} onChange={this.handleCheckboxChange} onUpdate={()=>{this.props.onUpdate();}} ref={this.checkBox}/>
                     <label onClick={this.toggleOpen}>{this.props.data.label}</label>
                 </div>
-                <ul className={`${!this.state.isOpen ? "hidden" : ""}`}>
+                <ul className={`${!this.state.isOpen ? "ncb-hidden" : ""}`}>
                 {
                     this.state.children.map((child,index) =>{
                         return (<li 
                                     key={child.name} 
                                     className={`${this.getClassNames(index)}`}>
                                         <Node 
+                                            classNames={this.props.classNames}
                                             index={index} 
                                             data={child} 
                                             childrenData={this.state.allGenerations} 

@@ -1,70 +1,74 @@
-# Getting Started with Create React App
+# Nested Checkbox
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was created as an assignment for Media.net. 
+Project requirement:
 
-## Available Scripts
+"Create a React/Angular component for a nested checkbox input like given below:
+Submission in the form of github repo with entire commit history"
 
-In the project directory, you can run:
+Sample Data:
 
-### `npm start`
+[
+    {
+    name: “0-0”,
+    parentId: null
+    },{
+    name: “0-1”,
+    parentId: null,
+    },{
+    name: “0-2”,
+    parentId: null,
+    },{
+    name: “0-0-0”,
+    parentId: “0-0,
+    },{
+    name: “0-0-0-0”,
+    parentId: “0-0-0,
+    },{
+    name: “0-0-0-1”,
+    parentId: “0-0-0,
+    },{
+    name: “0-0-0-2”,
+    parentId: “0-0-0,
+    },{
+    name: “0-0-1-0”,
+    parentId: “0-0-1,
+    },{
+    name: “0-0-1-1”,
+    parentId: “0-0-1,
+    },{
+    name: “0-0-1-2”,
+    parentId: “0-0-1,
+    },{
+    name: “0-0-2”,
+    parentId: “0-0,
+    },{
+    name: “0-1-0”,
+    parentId: “0-1,
+    }
+]
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## NestedCheckbox API:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The 'NestedCheckbox' component can be used in the following way:
+    <NestedCheckbox classNames={customStyles} data = {[...data]} api={(checkboxAPI)=>{api.current=checkboxAPI}}/>
 
-### `npm test`
+    data(requred): expects and array of objects;
+        {
+            name:requred. This is a unique indentifier.
+            parentId:requred. This should be parents name. If null the object becomes root node. If this does not match any names it is ignored.
+            label: required. This is shown in the ui.
+            data: optional. This can be any data associated with the node.
+        }
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    classNames(optional): This contains and object witll class names for the NestedCheckbox component.
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+    api(optional): This is a callback function that returs an Object containing functions that can be called.
+    {
+        getSelectedChildren(): Returns an array of selected nodes. 
+        setAllChildrenSelectionState(bool): Selects/unselects all nodes.
+        setAllChildrenOpenState(bool): Expands/collapses all nodes.
+        expandChild(string): Expands the node whose name is passed as argument. Throws error if the given name is not found.
+        colapseChild(string): Colapses the node whose name is passed as argument. Throws error if the given name is not found.
+        setChildSelectionState(string, bool): Selects/unselectsthe node whose name is passed as argument. Throws error if the given name is not found.
+    }

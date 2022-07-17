@@ -1,11 +1,22 @@
 import React,{useEffect, useState, useRef} from 'react';
 import Node from './node/Node';
 import "./NestedCheckbox.css"
+import OpenedIcon from "./node/open.PNG";
+import ClosedIcon from "./node/closed.PNG";
 
-export default function NestedCheckbox({data, api}) {
+export default function NestedCheckbox({data, api, classNames, onChange}) {
     const [children, setChildren] = useState([]);
     const apis = useRef([]);
-    const [allGenerations, setAllGenerations] = useState([]);
+    const bgClass = useRef("")
+    const childrenClass = useRef({
+        nodeClosed:"",
+        nodeOpened:"",
+        leaf:"",
+        checkboxClassNames:"",
+        openIcon:<img src={OpenedIcon}  alt="(-)"/>,
+        closeIcon:<img src={ClosedIcon} alt="(+)"/>
+      })
+   const [allGenerations, setAllGenerations] = useState([]);
 
     useEffect(()=>{
         let childrenData = [];
@@ -21,10 +32,22 @@ export default function NestedCheckbox({data, api}) {
                 apis.current.push(React.createRef());
             }
         });
-        
         setAllGenerations(allGenerationsData);
         setChildren(childrenData);
     },[data]);
+
+    useEffect(()=>{
+        if(classNames){
+            if(classNames && classNames.bgClass){
+                bgClass.current = classNames.bgClass;
+            }else{
+                bgClass.current = "";
+            }
+            if(classNames.children){
+                childrenClass.current = {...childrenClass.current, ...classNames.children}
+            }
+        }
+    },[classNames]);
 
     useEffect(()=>{
         if(typeof api === 'function'){
@@ -100,13 +123,31 @@ export default function NestedCheckbox({data, api}) {
         })
         return returnArray;
     };
+    const getBGClassName=()=>{
+        return bgClass.current;
+    }
 
     return (
-        <div className="nested-checkbox-container">
+        <div className={`nested-checkbox-container ${getBGClassName()}`}>
             <ul >
             {
                 children.map((child,index) =>{
-                    return (<li className={`${getClassNames(index)}`} key={child.name}><Node index={index} ref={apis.current[index]} data={child} childrenData={allGenerations} onChange={()=>{}} expandParent={()=>{}} onUpdate={()=>{}} /> </li>)
+                    return (<li 
+                        className={`${getClassNames(index)}`} 
+                        key={child.name}>
+                            <Node 
+                                classNames={childrenClass.current} 
+                                index={index} ref={apis.current[index]} 
+                                data={child} 
+                                childrenData={allGenerations} 
+                                onChange={
+                                    (childData)=>{
+                                        if(typeof onChange === 'function'){
+                                            onChange(childData);
+                                        }
+                                }} 
+                                expandParent={()=>{}} 
+                                onUpdate={()=>{}} /> </li>)
                 })
             }
                 

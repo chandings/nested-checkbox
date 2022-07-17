@@ -5,10 +5,13 @@
     font-size: 20px;
     padding: 10px 0;
 }
-
+.ncb-hidden{
+    visibility: hidden;
+    height: 0;
+  }
 .node-leaf{
     list-style: none;
-    padding-left: 28px;
+    padding-left: 19px;
 }
 .node-leaf > div> div > label{
     font-weight: lighter;
