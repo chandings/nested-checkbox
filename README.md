@@ -1,6 +1,9 @@
 # Nested Checkbox
 
 This project was created as an assignment for Media.net. 
+
+[Click to view](https://chandings.github.io/nested-checkbox/)
+
 Project requirement:
 
 "Create a React/Angular component for a nested checkbox input like given below:
