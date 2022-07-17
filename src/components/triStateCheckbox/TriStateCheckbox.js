@@ -47,6 +47,19 @@ export default class TriStateCheckbox extends Component {
         }
     }
 
+    changeIntermediateState = (value)=>{
+        this.fireOnChange = true;
+        this.setState((prevValue)=>{
+            return {intermediate:value};
+        })
+    };
+    changeCheckedState = (value)=>{
+        this.fireOnChange = true;
+        this.setState((prevValue)=>{
+            return {checked:value};
+        })
+    };
+
     setIntermediateState = (value)=>{
         this.setState((prevValue)=>{
             return {intermediate:value};

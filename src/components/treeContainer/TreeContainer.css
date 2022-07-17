@@ -3,5 +3,31 @@
     padding: 10px;
     margin:10px;
     height: fit-content;
-    width: 33vw;    
+    width: 30%;  
+    min-width: 300px; 
+    max-width:400px;
+    
+    min-height: 700px;
+}
+.error{
+    color: red;
+    font-weight: bold;
+}
+
+.text{
+    font-size: 18px;
+    border: 1px solid #4caf50;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+button{
+    font-size: 18px;
+    background: #4caf50;
+    border: none;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
 }

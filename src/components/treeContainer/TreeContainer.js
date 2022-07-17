@@ -2,73 +2,65 @@ import {useState, useEffect, useRef} from 'react';
 import NestedCheckbox from '../nestedCheckbox/NestedCheckbox';
 import "./TreeContainer.css"
 
-export default function TreeContainer() {
+export default function TreeContainer({dataArray, title}) {
     const [data, setData] = useState([]);
     const [processedData, setProcessedData] = useState([]);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [nodeName, setNodeName] = useState("");
     const api = useRef({});
     useEffect(() =>{
-        let dataArray = [
-            {
-            name: "0-0",
-            parentId: null
-            },{
-            name: "0-1",
-            parentId: null,
-            },{
-            name: "0-2",
-            parentId: null,
-            },{
-            name: "0-0-0",
-            parentId: "0-0",
-            },{
-            name: "0-0-0-0",
-            parentId: "0-0-0",
-            },{
-            name: "0-0-0-1",
-            parentId: "0-0-0",
-            },{
-            name: "0-0-0-2",
-            parentId: "0-0-0",
-            },{
-            name: "0-0-0-2-0",
-            parentId: "0-0-0-2",
-            },{
-            name: "0-0-0-2-1",
-            parentId: "0-0-0-2",
-            },{
-            name: "0-0-1-0",
-            parentId: "0-0-1",
-            },{
-            name: "0-0-1-1",
-            parentId: "0-0-1",
-            },{
-            name: "0-0-1-2",
-            parentId: "0-0-1",
-            },{
-            name: "0-0-2",
-            parentId: "0-0",
-            },{
-            name: "0-1-0",
-            parentId: "0-1",
-            }
-        ]
-
         dataArray.forEach(element=>element.label = element.name);
 
         setData(dataArray)
 
-    },[])
+    },[dataArray])
+
+    const handleExpandNode = ()=>{
+        //api.current.expandChild(nodeName);
+        setErrorMessage("")
+        try{
+            api.current.expandChild(nodeName);
+        }catch(error){
+            setErrorMessage("Error: " + error.message)
+        }
+    };
+
+    const handleColapseNode = ()=>{
+        //api.current.colapseChild(nodeName);
+        setErrorMessage("")
+        try{
+            api.current.colapseChild(nodeName);
+        }catch(error){
+            setErrorMessage("Error: " + error.message)
+        }
+    };
 
 
   
     return (
     <div className='tree-container'>
-    <h3>Default Implementation</h3>
+    <h3>{title}</h3>
         <NestedCheckbox  data = {[...data]} api={(checkboxAPI)=>{api.current=checkboxAPI}}/>
-        <button onClick={()=>{setProcessedData(api.current.getSelectedChildren())}}>Get Selected</button>
+        <button onClick={()=>{setProcessedData(api.current.getSelectedChildren())}}>Get Selected Labels</button>
+        <br/>
+        <button onClick={()=>{api.current.setAllChildrenSelectionState(true)}}>Select All</button>
+        <button onClick={()=>{api.current.setAllChildrenSelectionState(false)}}>Unselect All</button>
+        <br/>
+        <button onClick={()=>{api.current.setAllChildrenOpenState(true)}}>Expand All</button>
+        <button onClick={()=>{api.current.setAllChildrenOpenState(false)}}>Colapse All</button>
+        <br/>
+        <input className='text' type="text" onChange={(event)=>{setNodeName(event.target.value);}} placeholder='Label of the node'></input>
+        <br/>
+        <button onClick={()=>{api.current.setAllChildrenOpenState(true)}}>Select Node</button>
+        <button onClick={()=>{api.current.setAllChildrenOpenState(false)}}>Unselect Node</button>
+        <br/>
+        <button onClick={handleExpandNode}>Expand Node</button>
+        <button onClick={handleColapseNode}>Colapse Node</button>
+        <br/>
+        <p className='error'>{errorMessage}</p>
         <ul>
-            {processedData.map(data=>{
-                return <li>{data.name}</li>;
+            {processedData.map((data,index)=>{
+                return <li key={index}>{data.name}</li>;
             })}
         </ul>
     </div>

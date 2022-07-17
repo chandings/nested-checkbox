@@ -1,138 +1,204 @@
-import {useEffect, useState, useRef} from 'react'
-import TriStateCheckbox from '../../triStateCheckbox/TriStateCheckbox';
-import "./Node.css";
+import React, { Component } from 'react'
+import "./Node.css"
 import OpenedIcon from "./open.PNG";
 import ClosedIcon from "./closed.PNG";
+import TriStateCheckbox from '../../triStateCheckbox/TriStateCheckbox';
 
+export default class Node extends Component {
+    constructor(props) {
+        super(props);
+        /*
+        const checkBox = useRef();
+    const apis = useRef([]);
+        */
+        this.createState();
+    }
 
-export default function Node({index, data, childrenData, onChange, onUpdate, api}) {
-    const checkBox = useRef();
-    const [children, setChildren] = useState([]);
-    const [isBranch, setIsBranch] = useState(false);
-    const [allGenerations, setAllGenerations] = useState([]);
-    const [isOpen, setIsOpen] = useState(true);
-
-    useEffect(()=>{
+    createState(){
+        if(this.state){
+            throw new Error("Do not call crateState once the state has been created.")
+        }
         let myChildrenData = [];
         let allGenerationsData = [];
-        childrenData.forEach(element => {
-            if(element.parentId === data.name){
-                element.isBranch = (childrenData.find(child=>child.parentId===element.name)!==undefined)
-                myChildrenData.push({isBranch:element.isBranch, label:element.label,name:element.name, parentId:element.parentId, data:element.data, api:{}});
+        this.apis = [];
+        this.props.childrenData.forEach(element => {
+            if(element.parentId === this.props.data.name){
+                element.isBranch = (this.props.childrenData.find(child=>child.parentId===element.name)!==undefined)
+                myChildrenData.push({isBranch:element.isBranch, label:element.label,name:element.name, parentId:element.parentId, data:element.data});
+                this.apis.push(React.createRef());
             }else{
                 allGenerationsData.push(element);
             }
         });
-
-        setIsBranch(myChildrenData.length > 0);
-        setAllGenerations(allGenerationsData);
-        setChildren(myChildrenData);
-    },[childrenData]);
-
-    useEffect(()=>{
-        if(typeof api === 'function'){
-            api({setChildrenSelection,checkBox,getSelectedChildren}, index);
+        this.checkBox = React.createRef();
+        this.state = {
+            children:myChildrenData,
+            allGenerations:allGenerationsData,
+            isBranch:myChildrenData.length > 0,
+            isOpen:false
         }
-    },[api]);
+    }
 
-    const handleChildChange = (childData, isimmediateChild)=>{
-        console.log(data.name)
+    handleChildChange = (childData, isimmediateChild)=>{
         //Propagate the change towards root
-        onChange(childData, false);
+        this.props.onChange(childData, false);
     }
 
-    const handleChildUpdate = ()=>{
-        updateCheckBoxState();
+    handleChildUpdate = ()=>{
+        this.updateCheckBoxState();
+    };
+
+    handleCheckboxChange = (checkBoxState)=>{
+        this.setChildrenSelection(checkBoxState.checked)
+        this.props.onChange({name:this.props.data.name,data:this.props.data.data, selection:checkBoxState}, true);
     }
 
-    const handleCheckboxChange = (checkBoxState)=>{
-        setChildrenSelection(checkBoxState.checked)
-        if(onChange){
-            onChange({name:data.name,data:data.data, selection:checkBoxState}, true);
-        }
-    }
-
-    const setChildrenSelection = (isSelected) => {
-        console.log(data.name);
-        console.log(children);
-        if(isBranch){
-            children.forEach(child=>{
-                child.api.setChildrenSelection(isSelected)
+    
+    setChildrenSelection(isSelected){
+        if(this.state.isBranch){
+            this.apis.forEach(api=>{
+                api.current.setChildrenSelection(isSelected)
             })
-            checkBox.current.setCheckedState(isSelected);
+            this.checkBox.current.setCheckedState(isSelected);
         }else{
-            checkBox.current.setCheckedState(isSelected);
+            this.checkBox.current.setCheckedState(isSelected);
         }
     }
 
-    const updateCheckBoxState = ()=>{
-        let isIntermediate = false;
-        let isChecked_and = true;
-        let isChecked_or = false;
-        children.forEach(child=>{
-            if(child.api.checkBox.current.getIntermediateState() === true){
-                //set intermediate state. and return
-                isIntermediate = true;
-            }
-            isChecked_and = isChecked_and && child.api.checkBox.current.getCheckedState();
-            isChecked_or = isChecked_or || child.api.checkBox.current.getCheckedState();
-        });
-
-        checkBox.current.setCheckedState(isChecked_and && isChecked_or);
-        checkBox.current.setIntermediateState(isChecked_and !== isChecked_or || isIntermediate);
-    }
-    const toggleOpen = ()=>{
-        setIsOpen(prev=>!prev);
-    };
-    const getClassNames = (index)=>{
-        if(children[index].isBranch){
-            if(isOpen){
-                return "node-branch node-opened"; 
-            }
-            return "node-branch node-closed"; 
-        }
-        return "node-leaf"
-    };
-    const getImage = ()=>{
-        if(isBranch){
-            if(isOpen){
-                return <img src={OpenedIcon} onClick={toggleOpen}/>
-            }
-            return <img src={ClosedIcon} onClick={toggleOpen}/>
-        }
-        return <></>
-    }
-
-    const getSelectedChildren = ()=>{
+    getSelectedChildren = ()=>{
         let returnArray = [];
-        if(isBranch){
-            children.forEach((child)=>{
-                returnArray = [...returnArray, ...child.api.getSelectedChildren()]
+        if(this.state.isBranch){
+            this.apis.forEach((api)=>{
+                returnArray = [...returnArray, ...api.current.getSelectedChildren()]
             })
-            if(checkBox.current.getIntermediateState() || checkBox.current.getCheckedState()){
-                returnArray = [...returnArray, {name:data.name, data:data.data}]
+            if(this.checkBox.current.getIntermediateState() || this.checkBox.current.getCheckedState()){
+                returnArray = [...returnArray, {name:this.props.data.name, data:this.props.data.data}]
             }
         }else{
-            if(checkBox.current.getCheckedState()){
-                returnArray = [{name:data.name, data:data.data}];
+            if(this.checkBox.current.getCheckedState()){
+                returnArray = [{name:this.props.data.name, data:this.props.data.data}];
             }
         }        
         return returnArray;
     };
-  return (
-    <div>
-        <div className="node-checkbox-container">
-            {getImage()}
-            <TriStateCheckbox onChange={handleCheckboxChange} onUpdate={()=>{onUpdate();}} ref={checkBox}/>
-            <label onClick={toggleOpen}>{data.label}</label>
-        </div>
-        <ul className={`${!isOpen ? "hidden" : ""}`}>
-        {
-            children.map((child,index) =>{
-                return (<li key={child.name} className={`${getClassNames(index)}`}><Node api={(api)=>{child.api = api}} index={index} data={child} childrenData={allGenerations} onUpdate={handleChildUpdate} onChange={handleChildChange} /> </li>)
-            })
+
+    updateCheckBoxState=()=>{
+        let isIntermediate = false;
+        let isChecked_and = true;
+        let isChecked_or = false;
+        this.apis.forEach(api=>{
+            if(api.current.checkBox.current.getIntermediateState() === true){
+                //set intermediate state. and return
+                isIntermediate = true;
+            }
+            isChecked_and = isChecked_and && api.current.checkBox.current.getCheckedState();
+            isChecked_or = isChecked_or || api.current.checkBox.current.getCheckedState();
+        });
+
+        this.checkBox.current.setCheckedState(isChecked_and && isChecked_or);
+        this.checkBox.current.setIntermediateState(isChecked_and !== isChecked_or || isIntermediate);
+    }
+
+    toggleOpen = ()=>{
+        this.setState(prevState=>{
+            return {...prevState, isOpen:!prevState.isOpen}
+        })
+    };
+
+    setOpenState = (openState)=>{
+        this.setState((prevState)=>{
+            return {...prevState, isOpen:openState};
+        });
+    };
+
+    handleExpandParent = ()=>{
+        this.setOpenState(true);
+        this.props.expandParent();
+    }
+
+    expandChild = (name)=>{
+        if(this.state.isBranch){
+            if(this.props.data.name === name)
+            {
+                this.setOpenState(true);
+                this.props.expandParent();
+            }else{
+                this.apis.forEach(api=>{
+                    api.current.expandChild(name);
+                });
+            }
         }
-        </ul>
-    </div>
-  )
+    }
+
+    colapseChild = (name)=>{
+        if(this.state.isBranch){
+            if(this.props.data.name === name)
+            {
+                this.setOpenState(false);
+            }else{
+                this.apis.forEach(api=>{
+                    api.current.colapseChild(name);
+                });
+            }
+        }
+    }
+
+    setAllChildrenOpenState = (openState)=>{
+        if(this.state.isBranch){
+            this.setOpenState(openState);
+            this.apis.forEach(api=>{
+                api.current.setAllChildrenOpenState(openState);
+            });
+        }
+    };
+
+    getImage = ()=>{
+        if(this.state.isBranch){
+            if(this.state.isOpen){
+                return <img src={OpenedIcon} onClick={this.toggleOpen} alt="(-)"/>
+            }
+            return <img src={ClosedIcon} onClick={this.toggleOpen} alt="(+)"/>
+        }
+        return <></>
+    };
+
+    getClassNames = (index) =>{
+        if(this.state.children[index].isBranch){
+            // if(isOpen){
+            //     return "node-branch node-opened"; 
+            // }
+            return "node-branch"; 
+        }
+        return "node-leaf"
+    }
+
+    render() {
+        return (
+            <div>
+                <div className="node-checkbox-container">
+                    {this.getImage()}
+                    <TriStateCheckbox onChange={this.handleCheckboxChange} onUpdate={()=>{this.props.onUpdate();}} ref={this.checkBox}/>
+                    <label onClick={this.toggleOpen}>{this.props.data.label}</label>
+                </div>
+                <ul className={`${!this.state.isOpen ? "hidden" : ""}`}>
+                {
+                    this.state.children.map((child,index) =>{
+                        return (<li 
+                                    key={child.name} 
+                                    className={`${this.getClassNames(index)}`}>
+                                        <Node 
+                                            index={index} 
+                                            data={child} 
+                                            childrenData={this.state.allGenerations} 
+                                            onUpdate={this.handleChildUpdate} 
+                                            onChange={this.handleChildChange}
+                                            expandParent={this.handleExpandParent}
+                                            ref={this.apis[index]} /> 
+                                    </li>)
+                    })
+                }
+                </ul>
+            </div>
+        )
+    }
 }
